@@ -38,24 +38,6 @@ def create_faker_db(n: int):
         # Copie de fake_a dans une table fake_b
         con.sql("CREATE OR REPLACE TABLE fake_b AS SELECT * FROM fake_a")
 
-        # Ajout de lignes pour simuler des modifications à detecter
-
-        con.sql("""
-            INSERT into fake_a values 
-                ('Laura', 'laura@example.net', 'GB', '00 00 00 00 00')
-            """
-        )
-        con.sql("""
-            INSERT into fake_b values 
-                ('Laura', 'laura@example.net', 'GB', '00 00 00 00 01');
-            """
-        )        
-        con.sql("""
-            INSERT into fake_b values 
-                ('Benedicte', 'benedicte@example.net', 'FR', '00 00 00 00 00');
-            """
-        )
-
         SQL_COMPARE = """
             WITH
                 source_a AS (
@@ -87,6 +69,30 @@ def create_faker_db(n: int):
                 source_a.hash IS NULL OR source_b.hash IS NULL
             ORDER BY 2, 1
         """
+
+        print(f"Comparaison des deux tables avant modifications...")
+
+        print(con.sql(SQL_COMPARE).show())
+
+        # Ajout de lignes pour simuler des modifications à detecter
+
+        con.sql("""
+            INSERT into fake_a values 
+                ('Laura', 'laura@example.net', 'GB', '00 00 00 00 00')
+            """
+        )
+        con.sql("""
+            INSERT into fake_b values 
+                ('Laura', 'laura@example.net', 'GB', '00 00 00 00 01');
+            """
+        )        
+        con.sql("""
+            INSERT into fake_b values 
+                ('Benedicte', 'benedicte@example.net', 'FR', '00 00 00 00 00');
+            """
+        )
+
+        print(f"Comparaison des deux tables après modifications...")
 
         print(con.sql(SQL_COMPARE).show())
 
